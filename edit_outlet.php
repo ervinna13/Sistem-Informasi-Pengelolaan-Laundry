@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 WHERE id_outlet = '$id_outlet'";
 
 	if ($conn->query($query) === TRUE) {
-		echo '<script>alert("Perubahan berhasil disimpan!"); window.location.href = "index_customer.php";</script>';
+		echo '<script>alert("Perubahan berhasil disimpan!"); window.location.href = "data_outlet.php";</script>';
 		exit;
 	} else {
 		echo "Error: " . $query . "<br>" . $conn->error;
@@ -37,11 +37,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
 	$id_outlet = $_GET['id'];
 
 	// Ambil data customer dari database berdasarkan ID
-	$query = "SELECT * FROM data_customer WHERE id_outlet = '$id_outlet'";
+	$query = "SELECT * FROM outlet WHERE id_outlet = '$id_outlet'";
 	$result = $conn->query($query);
 
 	if ($result->num_rows > 0) {
-		$customer_data = $result->fetch_assoc();
+		$outlet = $result->fetch_assoc();
 	} else {
 		echo "Data customer tidak ditemukan.";
 		exit;
