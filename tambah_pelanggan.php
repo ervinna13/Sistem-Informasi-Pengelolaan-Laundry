@@ -2,6 +2,12 @@
 session_start();
 // Include file koneksi
 include('koneksi.php');
+
+// Periksa apakah pengguna sudah login dan memiliki peran admin
+if (!isset($_SESSION['id_user']) || $_SESSION['role'] !== 'admin') {
+	header("Location: login.php"); // Redirect ke halaman login jika tidak memenuhi syarat
+	exit();
+}
 // Check if the form is submitted
 // Check if the form is submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
