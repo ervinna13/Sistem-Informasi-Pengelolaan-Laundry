@@ -134,25 +134,7 @@ if (!isset($_SESSION['id_user']) || $_SESSION['role'] !== 'admin') {
 				</div>
 			</div>
 
-			<script>
-				function setDeleteOutletId(id_outlet) {
-					// Setel nilai id_outlet pada elemen input di dalam modal
-					document.getElementById('deleteOutletId').value = id_outlet;
-				}
-
-				function deleteOutlet() {
-					// Ambil nilai id_outlet dari input di dalam modal
-					var id_outlet = document.getElementById('deleteOutletId').value;
-
-					// Lakukan penghapusan dengan menggunakan id_outlet
-					// Tambahkan kode penghapusan sesuai dengan logika bisnis Anda
-					window.location.href = "hapus_outlet.php?id=" + id_outlet;
-
-					// Tutup modal setelah penghapusan (sesuai kebutuhan)
-					$('#delete_asset').modal('hide');
-				}
-			</script>
-
+			
 		</div>
 	</div>
 
