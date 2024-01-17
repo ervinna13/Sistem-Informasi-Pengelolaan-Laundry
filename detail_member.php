@@ -1,55 +1,31 @@
-
 <?php
-session_start();
-// Sertakan file koneksi
 include('koneksi.php');
+session_start();
 
-// Check jika pengguna belum login, redirect ke halaman login
 if (!isset($_SESSION['id_user']) || $_SESSION['role'] !== 'admin') {
-	header('Location: login.php');
-	exit;
+    header("Location: login.php");
+    exit();
 }
 
-// Proses edit data customer
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-	$id_outlet = $_POST['id_outlet'];
-    $nama = $_POST['nama'];
-    $alamat = $_POST['alamat'];
-    $tlp = $_POST['tlp'];
+if (isset($_GET['id']) && !empty($_GET['id'])) {
+    $id_member = $_GET['id'];
 
-	// Update data customer dalam database
-	$query = "UPDATE outlet SET 
-                nama = '$nama',
-                alamat = '$alamat',
-                tlp = '$tlp'
-                WHERE id_outlet = '$id_outlet'";
+    // Ambil data member dari database berdasarkan id_member
+    $query = "SELECT * FROM member WHERE id_member = '$id_member'";
+    $result = mysqli_query($conn, $query);
 
-	if ($conn->query($query) === TRUE) {
-		echo '<script>alert("DATA BERHASIL DIUBAH!"); window.location.href = "data_outlet.php";</script>';
-		exit;
-	} else {
+    if ($result) {
+        $member = mysqli_fetch_assoc($result);
+    } else {
+        // Handle error jika query tidak berhasil
         die("Error: " . mysqli_error($conn));
-		// echo "Error: " . $query . "<br>" . $conn->error;
-	}
-}
-
-// Ambil ID customer dari parameter URL
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
-	$id_outlet = $_GET['id'];
-
-	// Ambil data customer dari database berdasarkan ID
-	$query = "SELECT * FROM outlet WHERE id_outlet = '$id_outlet'";
-	$result = $conn->query($query);
-
-	if ($result->num_rows > 0) {
-		$outlet = $result->fetch_assoc();
-	} else {
-		echo "Data customer tidak ditemukan.";
-		exit;
-	}
+    }
+} else {
+    // Redirect jika parameter id tidak tersedia
+    header("Location: pelanggan.php");
+    exit();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <?php include('head.php');
@@ -64,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
                 <div class="page-header">
                     <div class="row align-items-center">
                         <div class="col">
-                            <h3 class="page-title mt-5">Edit Outlet</h3>
+                            <h3 class="page-title mt-5">Detail member</h3>
                         </div>
                     </div>
                 </div>
@@ -72,32 +48,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-body">
-                                <!-- Form edit outlet -->
-                                <form action="" method="POST">
+                                <!-- Form edit member -->
+                                <form method="POST">
                                     <div class="form-group">
-                                        <label for="id_outlet">Id Outlet</label>
-                                        <input type="text" class="form-control" id="id_outlet" name="id_outlet"
-                                            value="<?= $outlet['id_outlet']; ?>" readonly>
+                                        <label for="id_member">Id member</label>
+                                        <input type="text" class="form-control" id="id_member" name="id_member"
+                                            value="<?= $member['id_member']; ?>" readonly>
                                     </div>
                                     <div class="form-group">
-                                        <label for="nama">Nama Outlet</label>
+                                        <label for="nama">Nama member</label>
                                         <input type="text" class="form-control" id="nama" name="nama"
-                                            value="<?= $outlet['nama']; ?>" required>
+                                            value="<?= $member['nama']; ?>" readonly>
                                     </div>
+                                    
+                                        <div class="form-group">
+                                            <label>Jenis Kelamin</label><br>
+                                            <input type="text" class="form-control" id="jenis_kelamin" name="jenis_kelamin"
+                                            value="<?= $member['jenis_kelamin']; ?>" readonly>
+                                        </div>
                                     <div class="form-group">
                                         <label for="alamat">Alamat</label>
                                         <textarea class="form-control" id="alamat" name="alamat"
-                                            required><?= $outlet['alamat']; ?></textarea>
+                                            readonly><?= $member['alamat']; ?></textarea>
                                     </div>
                                     <div class="form-group">
-                                    <label for="tlp">No. Telepon</label>
+                                        <label for="tlp">No. Telepon</label>
                                         <input type="text" class="form-control" id="tlp" name="tlp"
-                                            value="<?= $outlet['tlp']; ?>" required maxlength="13" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 13)">
+                                            value="<?= $member['tlp']; ?>" maxlength="13" readonly>
                                     </div>
-                                    <a href="data_outlet.php" class="btn btn-primary"><i class="fa fa-backward"></i>
+                                    <a href="pelanggan.php" class="btn btn-primary"><i class="fa fa-backward"></i>
                                         KEMBALI
                                     </a>
-                                    <button type="submit" name="submit" class="btn btn-info">Update</button>
                                 </form>
                             </div>
                         </div>
@@ -107,9 +88,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
             </div>
         </div>
     </div>
-    <!-- Sisipkan Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
     <script src="assets/js/jquery-3.5.1.min.js"></script>
     <script src="assets/js/popper.min.js"></script>
     <script src="assets/js/bootstrap.min.js"></script>

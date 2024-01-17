@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 // Sertakan file koneksi
@@ -6,47 +5,49 @@ include('koneksi.php');
 
 // Check jika pengguna belum login, redirect ke halaman login
 if (!isset($_SESSION['id_user']) || $_SESSION['role'] !== 'admin') {
-	header('Location: login.php');
-	exit;
+    header('Location: login.php');
+    exit;
 }
 
 // Proses edit data customer
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-	$id_outlet = $_POST['id_outlet'];
+    $id_member = $_POST['id_member'];
     $nama = $_POST['nama'];
+    $jenis_kelamin = $_POST['jenis_kelamin'];
     $alamat = $_POST['alamat'];
     $tlp = $_POST['tlp'];
 
-	// Update data customer dalam database
-	$query = "UPDATE outlet SET 
+    // Update data customer dalam database
+    $query = "UPDATE member SET 
                 nama = '$nama',
+                jenis_kelamin = '$jenis_kelamin',
                 alamat = '$alamat',
                 tlp = '$tlp'
-                WHERE id_outlet = '$id_outlet'";
+                WHERE id_member = '$id_member'";
 
-	if ($conn->query($query) === TRUE) {
-		echo '<script>alert("DATA BERHASIL DIUBAH!"); window.location.href = "data_outlet.php";</script>';
-		exit;
-	} else {
+    if ($conn->query($query) === TRUE) {
+        echo '<script>alert("DATA BERHASIL DIUBAH!"); window.location.href = "pelanggan.php";</script>';
+        exit;
+    } else {
         die("Error: " . mysqli_error($conn));
-		// echo "Error: " . $query . "<br>" . $conn->error;
-	}
+        // echo "Error: " . $query . "<br>" . $conn->error;
+    }
 }
 
 // Ambil ID customer dari parameter URL
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
-	$id_outlet = $_GET['id'];
+    $id_member = $_GET['id'];
 
-	// Ambil data customer dari database berdasarkan ID
-	$query = "SELECT * FROM outlet WHERE id_outlet = '$id_outlet'";
-	$result = $conn->query($query);
+    // Ambil data customer dari database berdasarkan ID
+    $query = "SELECT * FROM member WHERE id_member = '$id_member'";
+    $result = $conn->query($query);
 
-	if ($result->num_rows > 0) {
-		$outlet = $result->fetch_assoc();
-	} else {
-		echo "Data customer tidak ditemukan.";
-		exit;
-	}
+    if ($result->num_rows > 0) {
+        $member = $result->fetch_assoc();
+    } else {
+        echo "Data customer tidak ditemukan.";
+        exit;
+    }
 }
 ?>
 
@@ -64,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
                 <div class="page-header">
                     <div class="row align-items-center">
                         <div class="col">
-                            <h3 class="page-title mt-5">Edit Outlet</h3>
+                            <h3 class="page-title mt-5">Edit member</h3>
                         </div>
                     </div>
                 </div>
@@ -72,29 +73,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-body">
-                                <!-- Form edit outlet -->
+                                <!-- Form edit member -->
                                 <form action="" method="POST">
                                     <div class="form-group">
-                                        <label for="id_outlet">Id Outlet</label>
-                                        <input type="text" class="form-control" id="id_outlet" name="id_outlet"
-                                            value="<?= $outlet['id_outlet']; ?>" readonly>
+                                        <label for="id_member">Id member</label>
+                                        <input type="text" class="form-control" id="id_member" name="id_member"
+                                            value="<?= $member['id_member']; ?>" readonly>
                                     </div>
                                     <div class="form-group">
-                                        <label for="nama">Nama Outlet</label>
+                                        <label for="nama">Nama member</label>
                                         <input type="text" class="form-control" id="nama" name="nama"
-                                            value="<?= $outlet['nama']; ?>" required>
+                                            value="<?= $member['nama']; ?>" required>
                                     </div>
+                                    <div class="form-group">
+                                        <label>Jenis Kelamin</label><br>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="jenis_kelamin"
+                                                id="laki-laki" value="Laki-laki" <?php echo ($member['jenis_kelamin'] == 'Laki-laki') ? 'checked' : ''; ?> required>
+                                            <label class="form-check-label" for="laki-laki">Laki-laki</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="jenis_kelamin"
+                                                id="perempuan" value="Perempuan" <?php echo ($member['jenis_kelamin'] == 'Perempuan') ? 'checked' : ''; ?> required>
+                                            <label class="form-check-label" for="perempuan">Perempuan</label>
+                                        </div>
+                                    </div>
+
                                     <div class="form-group">
                                         <label for="alamat">Alamat</label>
                                         <textarea class="form-control" id="alamat" name="alamat"
-                                            required><?= $outlet['alamat']; ?></textarea>
+                                            required><?= $member['alamat']; ?></textarea>
                                     </div>
                                     <div class="form-group">
-                                    <label for="tlp">No. Telepon</label>
-                                        <input type="text" class="form-control" id="tlp" name="tlp"
-                                            value="<?= $outlet['tlp']; ?>" required maxlength="13" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 13)">
+                                        <label for="tlp">No. Telepon</label>
+                                        <input type="text" class="form-control" id="tlp" name="tlp" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 13)"
+                                            value="<?= $member['tlp']; ?>" required maxlength="13">
                                     </div>
-                                    <a href="data_outlet.php" class="btn btn-primary"><i class="fa fa-backward"></i>
+                                    <a href="pelanggan.php" class="btn btn-primary"><i class="fa fa-backward"></i>
                                         KEMBALI
                                     </a>
                                     <button type="submit" name="submit" class="btn btn-info">Update</button>

@@ -3,22 +3,24 @@ session_start();
 // Include file koneksi
 include('koneksi.php');
 // Check if the form is submitted
+// Check if the form is submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	// Retrieve form data
-	$id_outlet = htmlspecialchars($_POST['id_outlet']);
+	$id_member = htmlspecialchars($_POST['id_member']);
 	$nama = htmlspecialchars($_POST['nama']);
 	$alamat = $_POST['alamat'];
 	$tlp = $_POST['tlp'];
-
+	$jenis_kelamin = $_POST['jenis_kelamin'];
 
 	// Insert data into the database
-	$query = "INSERT INTO outlet (id_outlet, nama, alamat, tlp) VALUES ('$id_outlet', '$nama','$alamat','$tlp')";
+	$query = "INSERT INTO member (id_member, nama, alamat, tlp, jenis_kelamin) VALUES ('$id_member', '$nama','$alamat','$tlp', '$jenis_kelamin')";
 	if ($conn->query($query) === TRUE) {
-		echo '<script>alert("DATA OUTLET BERHASIL DITAMBAHKAN!"); window.location.href = "data_outlet.php";</script>';
+		echo '<script>alert("DATA MEMBER BERHASIL DITAMBAHKAN!"); window.location.href = "pelanggan.php";</script>';
 	} else {
 		echo "Error: " . $query . "<br>" . $conn->error;
 	}
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -36,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				<div class="page-header">
 					<div class="row align-items-center">
 						<div class="col">
-							<h3 class="page-title mt-5">Tambah Outlet</h3>
+							<h3 class="page-title mt-5">Tambah Member</h3>
 						</div>
 					</div>
 				</div>
@@ -46,15 +48,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 							<div class="row formtype">
 								<div class="col-md-12">
 									<div class="form-group">
-										<label>ID Outlet</label>
-										<?php echo '<input class="form-control" type="text" readonly value="OUT' . rand(1000000000, 9999999999) . '" name="id_outlet" placeholder="id_outlet" required>'; ?>
+										<label>ID Member</label>
+										<?php echo '<input class="form-control" type="text" readonly value="MEM' . rand(1000000000, 9999999999) . '" name="id_member" placeholder="id_member" required>'; ?>
 									</div>
 								</div>
 
 								<div class="col-md-12">
 									<div class="form-group">
 										<label>Nama</label>
-										<input type="text" class="form-control" id="nama" name="nama" placeholder="Nama Outlet" required>
+										<input type="text" class="form-control" id="nama" name="nama"
+											placeholder="Nama member" required>
+									</div>
+								</div>
+								<div class="col-md-12">
+									<div class="form-group">
+										<label>Jenis Kelamin</label><br>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="radio" name="jenis_kelamin"
+												id="laki-laki" value="Laki-laki" required>
+											<label class="form-check-label" for="laki-laki">Laki-laki</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="radio" name="jenis_kelamin"
+												id="perempuan" value="Perempuan" required>
+											<label class="form-check-label" for="perempuan">Perempuan</label>
+										</div>
 									</div>
 								</div>
 								<div class="col-md-12">
@@ -63,16 +81,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 										<input type="tel" class="form-control" id="tlp" name="tlp" maxlength="13"
 											oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 13)"
 											required placeholder="nomor telepon">
+										<!-- <small class="form-text text-muted">Hanya angka yang diizinkan.</small> -->
 									</div>
+
 								</div>
 								<div class="col-md-12">
 									<div class="form-group">
 										<label>Alamat</label>
-										<textarea class="form-control" rows="5" id="alamat" name="alamat" placeholder="Alamat" required></textarea>
+										<textarea class="form-control" rows="5" id="alamat" name="alamat"
+											placeholder="Alamat" required></textarea>
 									</div>
 								</div>
 							</div>
-				<button  type="submit" name="submit"class="btn btn-primary buttonedit1">Tambah Outlet</button>
+							<button type="submit" name="submit" class="btn btn-primary buttonedit1">Tambah
+								member</button>
 
 						</form>
 					</div>
